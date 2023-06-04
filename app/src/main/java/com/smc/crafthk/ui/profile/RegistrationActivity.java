@@ -40,6 +40,7 @@ public class RegistrationActivity extends AppCompatActivity {
         EditText editName = binding.editName;
         EditText editEmail = binding.editEmail;
         EditText editPassword = binding.editPassword;
+        EditText editPasswordConfirmation = binding.editPasswordConfirmation;
         Button buttonRegister = binding.buttonRegister;
 
         // Add click listener to register button
@@ -50,18 +51,25 @@ public class RegistrationActivity extends AppCompatActivity {
                 String name = editName.getText().toString();
                 String email = editEmail.getText().toString();
                 String password = editPassword.getText().toString();
+                String passwordConfirmation = editPasswordConfirmation.getText().toString();
 
                 // Validate input
-                if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                if (name.isEmpty() || email.isEmpty() || password.isEmpty() || passwordConfirmation.isEmpty()) {
                     Toast.makeText(RegistrationActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                password = DigestUtils.md5Hex(password).toUpperCase();
+
                 if (!pattern.matcher(email).matches()){
                     Toast.makeText(RegistrationActivity.this, "Not correct email format", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
+                if (!password.equals(passwordConfirmation)){
+                    Toast.makeText(RegistrationActivity.this, "Password not match", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                password = DigestUtils.md5Hex(password).toUpperCase();
                 UserDao userDao = AppDatabase.getDatabase(getApplicationContext()).userDao();
                 if (userDao.getUserByEmail(email) != null) {
                     Toast.makeText(RegistrationActivity.this, "Email address already in use", Toast.LENGTH_SHORT).show();

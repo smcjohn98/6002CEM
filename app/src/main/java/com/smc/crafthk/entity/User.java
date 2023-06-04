@@ -15,6 +15,8 @@ public class User {
 
     public String password;
 
+    public String imagePath;
+
     public User(String name, String email, String password) {
         this.name = name;
         this.email = email;

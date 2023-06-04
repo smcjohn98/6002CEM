@@ -113,6 +113,7 @@ public class LoginActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putString("name", user.name);
         editor.putString("email", user.email);
+        editor.putString("profile_image_path", user.imagePath);
         editor.apply();
     }
 

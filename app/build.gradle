@@ -46,4 +46,5 @@ dependencies {
     implementation "androidx.room:room-runtime:2.4.0"
     annotationProcessor "androidx.room:room-compiler:2.4.0"
     implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
 }

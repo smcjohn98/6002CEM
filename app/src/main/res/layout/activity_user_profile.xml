@@ -12,6 +12,23 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <ImageView
+            android:id="@+id/avatar_image"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            app:srcCompat="@drawable/ic_explore"
+            android:visibility="gone"
+            />
+
+        <TextView
+            android:id="@+id/avatar_text"
+            android:layout_width="144dp"
+            android:layout_height="144dp"
+            android:background="@drawable/avatar_background"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="64sp" />
+
         <TextView
             android:id="@+id/text_name"
             android:layout_width="wrap_content"
@@ -29,6 +46,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Log out" />
+
+        <Button
+            android:id="@+id/button_clean"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Clean Avatar" />
 
     </LinearLayout>
 
