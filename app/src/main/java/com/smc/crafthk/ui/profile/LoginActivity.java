@@ -23,6 +23,7 @@ import com.smc.crafthk.dao.UserDao;
 import com.smc.crafthk.databinding.ActivityLoginBinding;
 import com.smc.crafthk.entity.User;
 import com.smc.crafthk.helper.AppDatabase;
+import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -96,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
 
+                saveUserLoginStatus(user);
                 Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                 startActivity(intent);
                 finish();
@@ -103,18 +105,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
-        binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            }
-        });
+        binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
     }
 
     public void saveUserLoginStatus(User user){

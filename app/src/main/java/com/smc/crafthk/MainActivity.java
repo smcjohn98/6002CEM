@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.smc.crafthk.databinding.ActivityMainBinding;
+import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 import com.smc.crafthk.ui.profile.LoginActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
         bottomNavigationView = binding.bottomNavigationView;
 
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
+        /*bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
     }
 
     @Override

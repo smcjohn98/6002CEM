@@ -19,6 +19,7 @@ import com.smc.crafthk.dao.UserDao;
 import com.smc.crafthk.databinding.ActivityRegistrationBinding;
 import com.smc.crafthk.entity.User;
 import com.smc.crafthk.helper.AppDatabase;
+import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 
 import org.apache.commons.codec.digest.DigestUtils;
 
@@ -84,17 +85,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
 
-        binding.bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.home:
-                        Intent intent = new Intent(RegistrationActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        return true;
-                }
-                return false;
-            }
-        });
+        binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
     }
 }
