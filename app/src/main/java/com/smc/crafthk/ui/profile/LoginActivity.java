@@ -101,6 +101,9 @@ public class LoginActivity extends AppCompatActivity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     FirebaseUser user = mAuth.getCurrentUser();
+                                    Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                                    startActivity(intent);
+                                    finish();
                                 } else {
                                     Exception e = task.getException();
                                     if (e instanceof FirebaseAuthInvalidUserException) {
@@ -114,23 +117,12 @@ public class LoginActivity extends AppCompatActivity {
                             }
                         });
 
-                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
-                startActivity(intent);
-                finish();
+
             }
         });
 
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
-    }
-
-    public void saveUserLoginStatus(User user){
-        SharedPreferences preferences = getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putString("name", user.name);
-        editor.putString("email", user.email);
-        editor.putString("profile_image_path", user.imagePath);
-        editor.apply();
     }
 
 }

@@ -6,12 +6,14 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.smc.crafthk.dao.ShopDao;
 import com.smc.crafthk.dao.UserDao;
+import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.entity.User;
 
-@Database(entities = {User.class}, version = 1)
+@Database(entities = {Shop.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract UserDao userDao();
+    public abstract ShopDao shopDao();
 
     private static volatile AppDatabase INSTANCE;
 
@@ -20,7 +22,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                                    AppDatabase.class, "my_database")
+                                    AppDatabase.class, "crafthk")
                             .allowMainThreadQueries()
                             .build();
                 }

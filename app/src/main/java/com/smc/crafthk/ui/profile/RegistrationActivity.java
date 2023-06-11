@@ -98,6 +98,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                             public void onComplete(@NonNull Task<Void> task) {
                                                 if (task.isSuccessful()) {
                                                     setResult(ResultCode.REGISTRATION_SUCCEED.getCode());
+                                                    Intent intent = new Intent(RegistrationActivity.this, ProfileActivity.class);
+                                                    startActivity(intent);
                                                     finish();
                                                 }
                                             }
@@ -122,27 +124,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             }
 
                         });
-
-                /*password = DigestUtils.md5Hex(password).toUpperCase();
-                UserDao userDao = AppDatabase.getDatabase(getApplicationContext()).userDao();
-                if (userDao.getUserByEmail(email) != null) {
-                    Toast.makeText(RegistrationActivity.this, "Email address already in use", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // Create new user object
-                User user = new User(name, email, password);
-
-                // Add user to database
-                userDao.insert(user);
-
-                setResult(ResultCode.REGISTRATION_SUCCEED.getCode());
-                // Display success message
-                Toast.makeText(RegistrationActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
-
-                // Finish activity and return to login screen
-                */
-                //finish();
             }
         });
 

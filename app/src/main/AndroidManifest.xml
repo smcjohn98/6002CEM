@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -28,5 +30,10 @@
         <activity android:name=".ui.profile.RegistrationActivity" />
         <activity android:name=".ui.profile.LoginActivity" />
         <activity android:name=".ui.profile.ProfileActivity" />
+        <activity android:name=".ui.shop.ShopActivity" />
+        <activity android:name=".ui.shop.CreateShopActivity" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAM1SEv2w5kAAUqVsr--b0p0IfwdCT7Ssg"/>
     </application>
 </manifest>

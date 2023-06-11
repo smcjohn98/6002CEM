@@ -36,7 +36,7 @@ public class BottomNavigationViewSelectedListener implements NavigationBarView.O
             return true;
         }
         else if(itemId == R.id.profile){
-            if(activityClass == LoginActivity.class){
+            if(activityClass == LoginActivity.class || activityClass == ProfileActivity.class ){
                 return false;
             }
 

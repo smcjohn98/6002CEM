@@ -12,7 +12,9 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -28,6 +30,8 @@ import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.databinding.ActivityUserProfileBinding;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
+import com.smc.crafthk.ui.shop.CreateShopActivity;
+import com.smc.crafthk.ui.shop.ShopActivity;
 import com.smc.crafthk.viewmodel.UserProfileViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -53,6 +57,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseAuth.getInstance();
         user = firebaseAuth.getCurrentUser();
+        if(user == null){
+            Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         textEmail.setText("Email: " + user.getEmail());
         textName.setText("Name: " + user.getDisplayName());
@@ -122,6 +131,11 @@ public class ProfileActivity extends AppCompatActivity {
             liveData.setUserProfileImagePath(null);
         });
 
+        binding.buttonShop.setOnClickListener(v->{
+            Intent intent = new Intent(ProfileActivity.this, ShopActivity.class);
+            startActivity(intent);
+        });
+
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
     }
@@ -163,6 +177,9 @@ public class ProfileActivity extends AppCompatActivity {
             user.updateProfile(profileUpdates);
             liveData.setUserProfileImagePath(profileImagePath);
         }
+        else if(resultCode == ResultCode.REGISTRATION_SUCCEED.getCode()){
+            Toast.makeText(ProfileActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private String getRealPathFromURI(Uri uri) {
@@ -174,4 +191,5 @@ public class ProfileActivity extends AppCompatActivity {
         cursor.close();
         return filePath;
     }
+
 }

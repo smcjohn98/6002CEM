@@ -41,16 +41,22 @@
             android:text="Email: " />
 
         <Button
-            android:id="@+id/button_logout"
+            android:id="@+id/button_shop"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Log out" />
+            android:text="My Shop" />
 
         <Button
             android:id="@+id/button_clean"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Clean Avatar" />
+
+        <Button
+            android:id="@+id/button_logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Log out" />
 
     </LinearLayout>
 
