@@ -1,5 +1,6 @@
 package com.smc.crafthk.implementation;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import androidx.annotation.NonNull;
 
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.MainActivity;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.Constraint;
@@ -24,14 +26,24 @@ public class BottomNavigationViewSelectedListener implements NavigationBarView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int itemId = item.getItemId();
+        Class<? extends Activity> activityClass = ((Activity) context).getClass();
         if(itemId == R.id.home){
+            if(activityClass == MainActivity.class){
+                return false;
+            }
             Intent intent = new Intent(context, MainActivity.class);
             context.startActivity(intent);
             return true;
         }
         else if(itemId == R.id.profile){
-            SharedPreferences preferences = context.getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
-            if(preferences.getString("name", "").length() > 0){
+            if(activityClass == LoginActivity.class){
+                return false;
+            }
+
+            //SharedPreferences preferences = context.getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            //preferences.getString("name", "").length() > 0
+            if(firebaseAuth.getCurrentUser() != null){
                 Intent intent = new Intent(context, ProfileActivity.class);
                 context.startActivity(intent);
                 return true;

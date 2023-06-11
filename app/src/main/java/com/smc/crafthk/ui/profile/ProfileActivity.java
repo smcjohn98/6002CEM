@@ -6,79 +6,82 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.google.android.material.navigation.NavigationBarView;
-import com.smc.crafthk.MainActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.constraint.ResultCode;
-import com.smc.crafthk.dao.UserDao;
 import com.smc.crafthk.databinding.ActivityUserProfileBinding;
-import com.smc.crafthk.entity.User;
-import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
-
-import javax.xml.transform.Result;
+import com.smc.crafthk.viewmodel.UserProfileViewModel;
 
 public class ProfileActivity extends AppCompatActivity {
 
     private ActivityUserProfileBinding binding;
 
+    private FirebaseUser user;
+    private FirebaseAuth firebaseAuth;
+
+    private UserProfileViewModel liveData;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityUserProfileBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        liveData = new ViewModelProvider(this).get(UserProfileViewModel.class);
 
-        TextView editEmail = binding.textEmail;
-        TextView editPassword = binding.textName;
-
-        SharedPreferences preferences = getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        String name = preferences.getString("name", "");
-        String email = preferences.getString("email", "");
-
-        editEmail.setText("Name: " + name);
-        editPassword.setText("Email: " + email);
-        String userProfileImagePath = getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE).getString("profile_image_path", null);
-
+        TextView textEmail = binding.textEmail;
+        TextView textName = binding.textName;
         ImageView avatarImage = binding.avatarImage;
         TextView avatarText = binding.avatarText;
-        View avatar = avatarText;
-        if (userProfileImagePath != null) {
-            Glide.with(this)
-                    .load(userProfileImagePath)
-                    .circleCrop()
-                    .into(avatarImage);
 
-            avatarImage.setVisibility(View.VISIBLE);
-            avatarText.setVisibility(View.GONE);
-            avatar = avatarImage;
-        } else {
-            String nameInitial = name.substring(0, 1);
-            avatarText.setText(nameInitial);
-        }
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
 
+        textEmail.setText("Email: " + user.getEmail());
+        textName.setText("Name: " + user.getDisplayName());
 
-        avatar.setOnClickListener(new View.OnClickListener() {
+        liveData.getUserProfileImagePath().observe(this, new Observer<String>() {
+            @Override
+            public void onChanged(String path) {
+                if(path == null){
+                    String nameInitial = user.getDisplayName().substring(0, 1);
+                    avatarText.setText(nameInitial);
+                    avatarText.setVisibility(View.VISIBLE);
+                    avatarImage.setVisibility(View.GONE);
+                }
+                else{
+                    Glide.with(ProfileActivity.this)
+                            .load(path)
+                            .circleCrop()
+                            .into(avatarImage);
+
+                    avatarImage.setVisibility(View.VISIBLE);
+                    avatarText.setVisibility(View.GONE);
+                }
+            }
+        });
+
+        Uri imageUri = user.getPhotoUrl();
+        liveData.setUserProfileImagePath(imageUri == null ? null : imageUri.getPath());
+
+        View.OnClickListener avatarOnClickerListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
@@ -94,39 +97,33 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.setType("image/*");
                 startActivityForResult(Intent.createChooser(intent, "Select Picture"), ResultCode.USER_PROFILE_IMAGE.getCode());
             }
-        });
+        };
+
+        avatarText.setOnClickListener(avatarOnClickerListener);
+        avatarImage.setOnClickListener(avatarOnClickerListener);
 
         binding.buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearUserLoginStatus();
+                firebaseAuth.signOut();
                 Intent intent = new Intent(ProfileActivity.this, LoginActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
 
-        binding.buttonClean.setOnClickListener((v)->{
-            UserDao dao = AppDatabase.getDatabase(this).userDao();
-            User user = dao.getUserByEmail(email);
-            user.imagePath = null;
-            dao.update(user);
-            getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE).edit()
-                    .remove("profile_image_path");
 
+        binding.buttonClean.setOnClickListener((v)->{
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(null)
+                    .build();
+
+            user.updateProfile(profileUpdates);
+            liveData.setUserProfileImagePath(null);
         });
 
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
-    }
-
-    public void clearUserLoginStatus(){
-        SharedPreferences preferences = getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.remove("name");
-        editor.remove("email");
-        editor.remove("profile_image_path");
-        editor.apply();
     }
 
     @Override
@@ -138,11 +135,12 @@ public class ProfileActivity extends AppCompatActivity {
 
             Uri uri = data.getData();
             String profileImagePath = getRealPathFromURI(uri);
-            SharedPreferences preferences = getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, MODE_PRIVATE);
+            /*SharedPreferences preferences = getSharedPreferences(Constraint.SHARE_PREFERENCE_NAME, MODE_PRIVATE);
             SharedPreferences.Editor editor = preferences.edit();
             editor.putString("profile_image_path", profileImagePath);
-            editor.apply();
-            ImageView avatarImage = binding.avatarImage;
+            editor.apply();*/
+
+            /*ImageView avatarImage = binding.avatarImage;
 
             Glide.with(this)
                     .load(profileImagePath)
@@ -158,7 +156,12 @@ public class ProfileActivity extends AppCompatActivity {
             UserDao dao = AppDatabase.getDatabase(this).userDao();
             User user = dao.getUserByEmail(email);
             user.imagePath = profileImagePath;
-            dao.update(user);
+            dao.update(user);*/
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setPhotoUri(new Uri.Builder().path(profileImagePath).build())
+                    .build();
+            user.updateProfile(profileUpdates);
+            liveData.setUserProfileImagePath(profileImagePath);
         }
     }
 

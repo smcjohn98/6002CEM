@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "389408483659",
+    "project_id": "cem-4bbf9",
+    "storage_bucket": "cem-4bbf9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389408483659:android:23841eddd05ca6e63ee0ce",
+        "android_client_info": {
+          "package_name": "com.smc.crafthk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389408483659-tposd2ppp9h0gf30bj5v329qdlhb1rm6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAM1SEv2w5kAAUqVsr--b0p0IfwdCT7Ssg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389408483659-tposd2ppp9h0gf30bj5v329qdlhb1rm6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

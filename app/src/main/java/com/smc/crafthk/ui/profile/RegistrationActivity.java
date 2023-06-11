@@ -11,7 +11,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.smc.crafthk.MainActivity;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.ResultCode;
@@ -29,6 +38,8 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private ActivityRegistrationBinding binding;
 
+    private FirebaseAuth mAuth;
+
     private Pattern pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+");
 
     @Override
@@ -36,7 +47,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-
+        mAuth = FirebaseAuth.getInstance();
         EditText editName = binding.editName;
         EditText editEmail = binding.editEmail;
         EditText editPassword = binding.editPassword;
@@ -60,7 +71,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 }
 
                 if (!pattern.matcher(email).matches()){
-                    Toast.makeText(RegistrationActivity.this, "Not correct email format", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RegistrationActivity.this, "Invalid email format", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
@@ -69,7 +80,50 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                password = DigestUtils.md5Hex(password).toUpperCase();
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
+
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    FirebaseUser user = task.getResult().getUser();
+
+                                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                            .setDisplayName(name)
+                                            .build();
+
+                                    user.updateProfile(profileUpdates)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    setResult(ResultCode.REGISTRATION_SUCCEED.getCode());
+                                                    finish();
+                                                }
+                                            }
+                                        });
+
+                                } else {
+                                    Exception e = task.getException();
+                                    if (e instanceof FirebaseAuthWeakPasswordException) {
+                                        Toast.makeText(RegistrationActivity.this, "Weak Password",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                                        Toast.makeText(RegistrationActivity.this, "Invalid email format",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else if (e instanceof FirebaseAuthUserCollisionException) {
+                                        Toast.makeText(RegistrationActivity.this, "Email is existed",
+                                                Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(RegistrationActivity.this, e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+
+                        });
+
+                /*password = DigestUtils.md5Hex(password).toUpperCase();
                 UserDao userDao = AppDatabase.getDatabase(getApplicationContext()).userDao();
                 if (userDao.getUserByEmail(email) != null) {
                     Toast.makeText(RegistrationActivity.this, "Email address already in use", Toast.LENGTH_SHORT).show();
@@ -87,7 +141,8 @@ public class RegistrationActivity extends AppCompatActivity {
                 Toast.makeText(RegistrationActivity.this, "Registration successful", Toast.LENGTH_SHORT).show();
 
                 // Finish activity and return to login screen
-                finish();
+                */
+                //finish();
             }
         });
 

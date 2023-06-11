@@ -14,7 +14,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.auth.FirebaseUser;
 import com.smc.crafthk.MainActivity;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.Constraint;
@@ -33,6 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private ActivityLoginBinding binding;
 
+    private FirebaseAuth mAuth;
     private Pattern pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+");
 
     @Override
@@ -50,6 +58,12 @@ public class LoginActivity extends AppCompatActivity {
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        mAuth = FirebaseAuth.getInstance();
+        if(mAuth.getCurrentUser() != null){
+            Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         TextView textRegister = binding.textRegister;
         textRegister.setOnClickListener(new View.OnClickListener() {
@@ -81,23 +95,25 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                password = DigestUtils.md5Hex(password).toUpperCase();
+                mAuth.signInWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                } else {
+                                    Exception e = task.getException();
+                                    if (e instanceof FirebaseAuthInvalidUserException) {
+                                        Toast.makeText(LoginActivity.this, "User is not existed", Toast.LENGTH_SHORT).show();
+                                    } else if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                                        Toast.makeText(LoginActivity.this, "Password not match", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            }
+                        });
 
-                UserDao userDao = AppDatabase.getDatabase(getApplicationContext()).userDao();
-                User user = userDao.getUserByEmail(email);
-                if (user == null) {
-                    Toast.makeText(LoginActivity.this, "User is not existed", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                if (!password.equals(user.password)) {
-                    Toast.makeText(LoginActivity.this, "Password not match", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                Toast.makeText(LoginActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-
-                saveUserLoginStatus(user);
                 Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
                 startActivity(intent);
                 finish();
