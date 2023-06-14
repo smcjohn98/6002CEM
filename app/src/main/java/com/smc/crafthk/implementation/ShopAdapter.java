@@ -3,6 +3,7 @@ package com.smc.crafthk.implementation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,9 +20,11 @@ import java.util.List;
 public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder> {
 
     private List<Shop> shopList;
+    private OnItemClickListener onItemClickListener;
 
-    public ShopAdapter(List<Shop> shopList) {
+    public ShopAdapter(List<Shop> shopList, OnItemClickListener onItemClickListener) {
         this.shopList = shopList;
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -38,11 +41,21 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         Glide.with(holder.itemView.getContext())
                 .load(new File(shop.imagePath))
                 .into(holder.imageView);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(position);
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
         return shopList.size();
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public static class ShopViewHolder extends RecyclerView.ViewHolder {

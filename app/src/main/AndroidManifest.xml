@@ -32,6 +32,7 @@
         <activity android:name=".ui.profile.ProfileActivity" />
         <activity android:name=".ui.shop.ShopActivity" />
         <activity android:name=".ui.shop.CreateShopActivity" />
+        <activity android:name=".ui.shop.ShopPagerActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAM1SEv2w5kAAUqVsr--b0p0IfwdCT7Ssg"/>

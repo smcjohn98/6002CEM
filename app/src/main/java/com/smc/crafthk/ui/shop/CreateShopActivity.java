@@ -99,7 +99,7 @@ public class CreateShopActivity extends AppCompatActivity {
             Places.initialize(this, "AIzaSyAM1SEv2w5kAAUqVsr--b0p0IfwdCT7Ssg");
         }
 
- 
+
         EditText editShopName = binding.editShopName;
         EditText editPhone = binding.editPhone;
         EditText editDescription = binding.editDescription;

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey;
 
 import java.math.BigDecimal;
 
-@Entity(tableName = "shops")
+@Entity(tableName = "products")
 public class Product {
     @PrimaryKey(autoGenerate = true)
     public int id;

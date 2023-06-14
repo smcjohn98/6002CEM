@@ -38,6 +38,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.R;
+import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.dao.ShopDao;
 import com.smc.crafthk.databinding.ActivityCreateShopBinding;
@@ -46,6 +47,7 @@ import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 import com.smc.crafthk.implementation.ShopAdapter;
+import com.smc.crafthk.implementation.ShopPagerAdapter;
 import com.smc.crafthk.viewmodel.CreateShopViewModel;
 
 import java.io.IOException;
@@ -78,7 +80,13 @@ public class ShopActivity extends AppCompatActivity {
         List<Shop> shopList = shopDao.getShopByUserId(mAuth.getCurrentUser().getUid());
         RecyclerView recyclerView = binding.listShop;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ShopAdapter adapter = new ShopAdapter(shopList);
+        ShopAdapter adapter = new ShopAdapter(shopList, position->{
+            Shop shop = shopList.get(position);
+            Intent intent = new Intent(ShopActivity.this, ShopPagerActivity.class);
+            intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, shop.id);
+            startActivity(intent);
+            //Toast.makeText(ShopActivity.this, shop.name + " clicked", Toast.LENGTH_SHORT).show();
+        });
         recyclerView.setAdapter(adapter);
 
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);

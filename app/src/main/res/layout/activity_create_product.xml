@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!-- Add padding to this LinearLayout -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,76 +16,46 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-            <!--<fragment
-                android:id="@+id/autocomplete_fragment"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:name=
-                    "com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-                />-->
-
             <TextView
                 android:id="@+id/text_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:text="Create Shop"
+                android:text="Create Product"
                 android:textAppearance="?attr/textAppearanceHeadline6"
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/text_shop_name"
+                android:id="@+id/text_product_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/edit_shop_name"
-                android:text="Shop Name"
+                android:text="Product Name"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:textStyle="bold" />
 
             <EditText
-                android:id="@+id/edit_shop_name"
+                android:id="@+id/edit_product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your shop name"/>
+                android:hint="Enter product name"/>
 
             <TextView
-                android:id="@+id/text_location"
+                android:id="@+id/text_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/text_location_value"
-                android:text="Location"
+                android:text="Price"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/text_location_value"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="(0, 0)"/>
-
-            <TextView
-                android:id="@+id/text_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""/>
-
-            <fragment
-                android:id="@+id/map_fragment"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+            <EditText
+                android:id="@+id/edit_price"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
-
-            <TextView
-                android:id="@+id/text_image"
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/image_shop"
-                android:text="Image"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
+                android:inputType="numberDecimal"
+                android:hint="Enter product Price"/>
 
             <ImageView
-                android:id="@+id/image_shop"
+                android:id="@+id/image_product"
                 android:layout_width="200dp"
                 android:layout_height="200dp"/>
 
@@ -94,29 +63,12 @@
                 android:id="@+id/button_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Upload Shop Image" />
-
-            <TextView
-                android:id="@+id/text_phone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:labelFor="@+id/edit_phone"
-                android:text="Phone Number"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/edit_phone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="phone"
-                android:hint="Enter your phone number"/>
+                android:text="Upload Product Image" />
 
             <TextView
                 android:id="@+id/text_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:labelFor="@+id/edit_description"
                 android:text="Description"
                 android:textAppearance="?attr/textAppearanceSubtitle1"
                 android:textStyle="bold" />
@@ -125,7 +77,7 @@
                 android:id="@+id/edit_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter your description"/>
+                android:hint="Enter product description"/>
 
             <Button
                 android:id="@+id/button_create"
