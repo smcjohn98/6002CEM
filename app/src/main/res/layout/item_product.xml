@@ -23,21 +23,18 @@
             android:id="@+id/text_product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textSize="24sp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/text_price"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:textSize="24sp"/>
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/text_shop_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
             android:textSize="18sp"/>
 
     </LinearLayout>

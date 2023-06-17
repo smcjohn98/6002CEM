@@ -33,6 +33,8 @@
         <activity android:name=".ui.shop.ShopActivity" />
         <activity android:name=".ui.shop.CreateShopActivity" />
         <activity android:name=".ui.shop.ShopPagerActivity" />
+        <activity android:name=".ui.product.CreateProductActivity" />
+        <activity android:name=".ui.event.CreateEventActivity" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAM1SEv2w5kAAUqVsr--b0p0IfwdCT7Ssg"/>

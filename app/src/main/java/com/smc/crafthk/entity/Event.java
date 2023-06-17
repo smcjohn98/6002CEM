@@ -4,9 +4,11 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
-@Entity(tableName = "products")
-public class Product {
+
+@Entity(tableName = "events")
+public class Event {
     @PrimaryKey(autoGenerate = true)
     public int id;
 
@@ -14,7 +16,7 @@ public class Product {
     public String name;
     public BigDecimal price;
     public String imagePath;
-    public int type;
+    public LocalDateTime dateTime;
     public String description;
 
 }

@@ -25,7 +25,7 @@ public interface ProductDao {
     List<Product> getAllProducts();
 
     @Query("SELECT * FROM products where shopId = :shopId")
-    List<Product> getProductsByShopId(String shopId);
+    List<Product> getProductsByShopId(int shopId);
 
     @Query("SELECT * FROM products p, shops s where s.id = p.shopId")
     List<Product> getProductsWithShopInfo();
