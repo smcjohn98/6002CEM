@@ -49,6 +49,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         holder.textDateTime.setText(dateTimeFormatter.format(event.eventDateTime));
         holder.textShopName.setVisibility(View.GONE);
+        holder.shopImageView.setVisibility(View.GONE);
 
         Glide.with(holder.itemView.getContext())
                 .load(new File(event.eventImagePath))
@@ -72,6 +73,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        ImageView shopImageView;
         TextView textEventName;
         TextView textPrice;
         TextView textShopName;
@@ -80,6 +82,7 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
         public EventViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_event);
+            shopImageView = itemView.findViewById(R.id.image_shop);
             textEventName = itemView.findViewById(R.id.text_event_name);
             textPrice = itemView.findViewById(R.id.text_price);
             textShopName = itemView.findViewById(R.id.text_shop_name);

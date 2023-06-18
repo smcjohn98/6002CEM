@@ -10,7 +10,9 @@ public enum ResultCode {
     REQUEST_IMAGE_PERMISSION(1004),
     SHOP_IMAGE(1005),
     PRODUCT_IMAGE(1006),
-    PERMISSION_LOCATION(1007);
+    CHOOSE_IMAGE(1007),
+    TAKE_PHOTO(1008),
+    PERMISSION_LOCATION(1008);
 
     int code;
     ResultCode(int code){

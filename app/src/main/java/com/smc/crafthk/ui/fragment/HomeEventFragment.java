@@ -22,6 +22,7 @@ import com.smc.crafthk.implementation.EventAdapter;
 import com.smc.crafthk.implementation.EventWithShopInfoAdapter;
 import com.smc.crafthk.implementation.ProductWithShopInfoAdapter;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +54,8 @@ public class HomeEventFragment extends Fragment {
     public void onResume() {
         super.onResume();
         EventDao eventDao = AppDatabase.getDatabase(getContext()).eventDao();
-        List<EventWithShopInfo> eventList = eventDao.getEventsWithShopInfo(pageOfSize, 0);
+        LocalDateTime localDateTime = LocalDateTime.now().minusDays(1);
+        List<EventWithShopInfo> eventList = eventDao.getUpcomingEventsWithShopInfo(pageOfSize, 0, localDateTime);
         adapter.setData(eventList);
         adapter.notifyDataSetChanged();
     }

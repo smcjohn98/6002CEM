@@ -3,9 +3,11 @@ package com.smc.crafthk.ui.product;
 import static com.smc.crafthk.constraint.Constraint.SHOP_ID_INTENT_EXTRA;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -35,7 +37,12 @@ import com.smc.crafthk.entity.Product;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CreateProductActivity extends AppCompatActivity {
 
@@ -129,15 +136,42 @@ public class CreateProductActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ResultCode.PRODUCT_IMAGE.getCode()) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == ResultCode.CHOOSE_IMAGE.getCode()) {
+                Uri uri = data.getData();
+                imagePath = getRealPathFromURI(uri);
+                ImageView imageView = binding.imageProduct;
+                Glide.with(CreateProductActivity.this)
+                        .load(imagePath)
+                        .into(imageView);
 
-            Uri uri = data.getData();
-            imagePath = getRealPathFromURI(uri);
+            } else if (requestCode == ResultCode.TAKE_PHOTO.getCode()) {
+                Bundle extras = data.getExtras();
+                Bitmap imageBitmap = (Bitmap) extras.get("data");
+                File cacheDir = getCacheDir();
+                File imageFile = new File(cacheDir, "image.jpg");
 
-            ImageView imageView = binding.imageProduct;
-            Glide.with(CreateProductActivity.this)
-                    .load(imagePath)
-                    .into(imageView);
+                try (FileOutputStream fos = new FileOutputStream(imageFile)) {
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                    fos.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String imageFileName = "IMG_" + timeStamp + ".jpg";
+                    String saveImagePath = MediaStore.Images.Media.insertImage(getContentResolver(), imageFile.getAbsolutePath(), imageFileName, null);
+                    Uri imageUri = Uri.parse(saveImagePath);
+                    imagePath = getRealPathFromURI(imageUri);
+                    Glide.with(CreateProductActivity.this)
+                            .load(imagePath)
+                            .into(binding.imageProduct);
+                }
+                catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
         else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
             pickImage();
@@ -155,9 +189,22 @@ public class CreateProductActivity extends AppCompatActivity {
     }
 
     public void pickImage(){
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), ResultCode.PRODUCT_IMAGE.getCode());
+        new AlertDialog.Builder(this)
+                .setTitle("Upload Image")
+                .setItems(new String[]{"Choose Image From Album", "Take Photo"}, (dialog, which) -> {
+                    switch (which) {
+                        case 0:
+                            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            startActivityForResult(intent, ResultCode.CHOOSE_IMAGE.getCode());
+                            break;
+                        case 1:
+                            Intent intent2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                            startActivityForResult(intent2, ResultCode.TAKE_PHOTO.getCode());
+                            break;
+                    }
+                })
+                .show();
+
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

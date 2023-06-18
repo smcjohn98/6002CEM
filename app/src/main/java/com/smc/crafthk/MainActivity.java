@@ -1,7 +1,9 @@
 package com.smc.crafthk;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -11,7 +13,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.smc.crafthk.dao.ProductDao;
 import com.smc.crafthk.databinding.ActivityMainBinding;
+import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 import com.smc.crafthk.implementation.HomePagerAdapter;
 import com.smc.crafthk.viewmodel.HomeProductViewModel;
@@ -31,6 +35,9 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        ProductDao productDao = AppDatabase.getDatabase(this).productDao();
+
+        //productDao.delete(productDao.getProduct(8));
         TabLayout tabLayout = binding.tabLayout;
         ViewPager2 viewPager = binding.viewPager;
 
@@ -57,4 +64,18 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle back button click
+        if (item.getItemId() == R.id.about_me) {
+            new AlertDialog.Builder(this)
+                    .setTitle("About Me")
+                    .setMessage("Suen Man Chun - 227020426")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

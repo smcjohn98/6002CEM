@@ -26,6 +26,9 @@ public interface ProductDao {
     @Query("SELECT * FROM products")
     List<Product> getAllProducts();
 
+    @Query("SELECT * FROM products where id = :id")
+    Product getProduct(int id);
+
     @Query("SELECT * FROM products where shopId = :shopId")
     List<Product> getProductsByShopId(int shopId);
 
