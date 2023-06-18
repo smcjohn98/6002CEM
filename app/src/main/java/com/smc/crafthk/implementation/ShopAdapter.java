@@ -25,6 +25,9 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setData(List<Shop> list){
+        this.shopList = list;
+    }
     @Override
     public ShopViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_shop, parent, false);

@@ -12,6 +12,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -136,8 +137,8 @@ public class CreateEventActivity extends AppCompatActivity {
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
-
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
     }
 
@@ -174,5 +175,15 @@ public class CreateEventActivity extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), ResultCode.PRODUCT_IMAGE.getCode());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle back button click
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

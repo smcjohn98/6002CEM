@@ -41,7 +41,7 @@ public class ShopViewEventFragment extends Fragment {
 
         RecyclerView eventView = binding.listEvent;
         eventView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter = new EventAdapter(new ArrayList<>(), position->{}, false);
+        adapter = new EventAdapter(new ArrayList<>(), position->{});
         eventView.setAdapter(adapter);
 
         return view;

@@ -3,7 +3,7 @@ package com.smc.crafthk.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class HomeViewModel extends ViewModel {
+public class HomeProductViewModel extends ViewModel {
 
     private MutableLiveData<String> searchProductName = new MutableLiveData<>();
     private MutableLiveData<Integer> searchProductType = new MutableLiveData<>();

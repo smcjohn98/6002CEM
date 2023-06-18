@@ -2,6 +2,7 @@ package com.smc.crafthk.ui.shop;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,7 +57,18 @@ public class ShopPagerActivity extends AppCompatActivity {
             }
         }).attach();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle back button click
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

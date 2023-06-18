@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,9 +41,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.constraint.ResultCode;
+import com.smc.crafthk.dao.EventDao;
 import com.smc.crafthk.dao.ShopDao;
 import com.smc.crafthk.databinding.ActivityCreateShopBinding;
 import com.smc.crafthk.databinding.ActivityShopBinding;
+import com.smc.crafthk.entity.Event;
 import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
@@ -61,6 +64,9 @@ public class ShopActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+    ShopAdapter adapter;
+
+    List<Shop> shopList;
     private Double longitude, latitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,15 +78,14 @@ public class ShopActivity extends AppCompatActivity {
         binding.buttonCreate.setOnClickListener(v->{
             Intent intent = new Intent(ShopActivity.this, CreateShopActivity.class);
             startActivity(intent);
-            finish();
         });
 
 
-        ShopDao shopDao = AppDatabase.getDatabase(getApplicationContext()).shopDao();
-        List<Shop> shopList = shopDao.getShopByUserId(mAuth.getCurrentUser().getUid());
+        /*ShopDao shopDao = AppDatabase.getDatabase(getApplicationContext()).shopDao();
+        List<Shop> shopList = shopDao.getShopByUserId(mAuth.getCurrentUser().getUid());*/
         RecyclerView recyclerView = binding.listShop;
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ShopAdapter adapter = new ShopAdapter(shopList, position->{
+        adapter = new ShopAdapter(new ArrayList<>(), position->{
             Shop shop = shopList.get(position);
             Intent intent = new Intent(ShopActivity.this, ShopPagerActivity.class);
             intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, shop.id);
@@ -89,7 +94,26 @@ public class ShopActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adapter);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.bottomNavigationView.setSelectedItemId(R.id.profile);
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ShopDao shopDao = AppDatabase.getDatabase(getApplicationContext()).shopDao();
+        shopList = shopDao.getShopByUserId(mAuth.getCurrentUser().getUid());
+        adapter.setData(shopList);
+        adapter.notifyDataSetChanged();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle back button click
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

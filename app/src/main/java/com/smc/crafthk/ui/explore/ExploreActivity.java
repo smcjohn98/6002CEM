@@ -38,6 +38,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.R;
+import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.constraint.Util;
 import com.smc.crafthk.dao.ShopDao;
@@ -45,6 +46,7 @@ import com.smc.crafthk.databinding.ActivityCreateProductBinding;
 import com.smc.crafthk.databinding.ActivityExploreBinding;
 import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.helper.AppDatabase;
+import com.smc.crafthk.ui.home.ShopViewPagerActivity;
 import com.smc.crafthk.ui.shop.CreateShopActivity;
 
 import java.io.IOException;
@@ -62,6 +64,8 @@ public class ExploreActivity extends AppCompatActivity {
     GoogleMap googleMap;
 
     Circle circle;
+
+    Shop selectedShop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +128,8 @@ public class ExploreActivity extends AppCompatActivity {
                 googleMap.setOnMarkerClickListener(marker->{
                     Shop shop = markerToShop.get(marker);
                     if(shop != null){
+                        selectedShop = shop;
+                        binding.buttonView.setVisibility(View.VISIBLE);
                         binding.textShopId.setText("Shop : "+shop.name);
                         float[] results = new float[1];
                         Location.distanceBetween(shop.latitude, shop.longitude, currentLatitude, currentLongitude, results);
@@ -132,6 +138,12 @@ public class ExploreActivity extends AppCompatActivity {
                     return false;
                 });
             }
+        });
+
+        binding.buttonView.setOnClickListener(v->{
+            Intent intent = new Intent(ExploreActivity.this, ShopViewPagerActivity.class);
+            intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, selectedShop.id);
+            startActivity(intent);
         });
 
         binding.buttonSwitch.setOnCheckedChangeListener((buttonView, isChecked)->{

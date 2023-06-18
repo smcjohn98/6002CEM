@@ -1,6 +1,7 @@
 package com.smc.crafthk.ui.home;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
@@ -57,7 +58,18 @@ public class ShopViewPagerActivity extends AppCompatActivity {
             }
         }).attach();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         binding.bottomNavigationView.setSelectedItemId(R.id.home);
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle back button click
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

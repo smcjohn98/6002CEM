@@ -1,30 +1,32 @@
-package com.smc.crafthk;
+package com.smc.crafthk.ui.home;
 
 import android.os.Bundle;
-import android.view.Menu;
+import android.view.MenuItem;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import androidx.navigation.ui.AppBarConfiguration;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
+import com.smc.crafthk.R;
+import com.smc.crafthk.constraint.Constraint;
+import com.smc.crafthk.constraint.Util;
+import com.smc.crafthk.dao.ShopDao;
 import com.smc.crafthk.databinding.ActivityMainBinding;
+import com.smc.crafthk.databinding.ActivityShopViewPagerBinding;
+import com.smc.crafthk.entity.Shop;
+import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
 import com.smc.crafthk.implementation.HomePagerAdapter;
-import com.smc.crafthk.viewmodel.HomeProductViewModel;
+import com.smc.crafthk.implementation.ShopViewPagerAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class HomePagerActivity extends AppCompatActivity {
 
-    private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    private BottomNavigationView bottomNavigationView;
-
-    private HomeProductViewModel viewModel;
-    private int pageOfSize = 6;
+    private Integer shopId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +53,4 @@ public class MainActivity extends AppCompatActivity {
         binding.bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
 }

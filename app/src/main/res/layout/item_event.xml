@@ -37,11 +37,26 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"/>
 
-        <TextView
-            android:id="@+id/text_shop_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"/>
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:id="@+id/shop_info">
+
+            <ImageView
+                android:id="@+id/image_shop"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/text_shop_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
