@@ -27,4 +27,7 @@ public interface ShopDao {
 
     @Query("SELECT * FROM shops where userId = :userId")
     List<Shop> getShopByUserId(String userId);
+
+    @Query("SELECT * FROM shops where id = :id")
+    Shop getShopById(int id);
 }
