@@ -3,6 +3,7 @@ package com.smc.crafthk.ui.event;
 import static com.smc.crafthk.constraint.Constraint.SHOP_ID_INTENT_EXTRA;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -13,10 +14,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,17 +27,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.dao.EventDao;
-import com.smc.crafthk.dao.ProductDao;
 import com.smc.crafthk.databinding.ActivityCreateEventBinding;
-import com.smc.crafthk.databinding.ActivityCreateProductBinding;
 import com.smc.crafthk.entity.Event;
-import com.smc.crafthk.entity.Product;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
-import com.smc.crafthk.ui.shop.ShopPagerActivity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 
 public class CreateEventActivity extends AppCompatActivity {
@@ -76,8 +72,19 @@ public class CreateEventActivity extends AppCompatActivity {
                     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     calendar.set(Calendar.MINUTE, minute);
 
-                    eventDateTime = LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
-                    binding.textEventTimeValue.setText(eventDateTime.toString());
+                    LocalDateTime selectedDateTime = LocalDateTime.ofInstant(calendar.toInstant(), calendar.getTimeZone().toZoneId());
+                    if(selectedDateTime.isBefore(LocalDateTime.now().plusMinutes(30))){
+                        new AlertDialog.Builder(this)
+                                .setTitle("Alert")
+                                .setMessage("Selected date/time must more than 30 minutes after now")
+                                .setPositiveButton("OK", null)
+                                .show();
+                    }
+                    else {
+                        eventDateTime = selectedDateTime;
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                        binding.textEventTimeValue.setText(formatter.format(eventDateTime));
+                    }
                 }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
                 timePickerDialog.show();
@@ -103,11 +110,11 @@ public class CreateEventActivity extends AppCompatActivity {
             EventDao eventDao = AppDatabase.getDatabase(getApplicationContext()).eventDao();
             Event event = new Event();
             event.shopId = shopId;
-            event.price = new BigDecimal(price);
-            event.name = eventName;
-            event.description = description;
-            event.dateTime = eventDateTime;
-            event.imagePath = imagePath;
+            event.eventPrice = new BigDecimal(price);
+            event.eventName = eventName;
+            event.eventDescription = description;
+            event.eventDateTime = eventDateTime;
+            event.eventImagePath = imagePath;
             eventDao.insert(event);
             finish();
         });
@@ -138,7 +145,7 @@ public class CreateEventActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ResultCode.PRODUCT_IMAGE.getCode()) {
+        if (requestCode == ResultCode.PRODUCT_IMAGE.getCode() && resultCode == RESULT_OK) {
 
             Uri uri = data.getData();
             imagePath = getRealPathFromURI(uri);

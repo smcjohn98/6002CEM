@@ -29,6 +29,15 @@ public interface ProductDao {
     @Query("SELECT * FROM products where shopId = :shopId")
     List<Product> getProductsByShopId(int shopId);
 
-    @Query("SELECT * FROM products p, shops s where s.id = p.shopId LIMIT :pageSize OFFSET :offset")
+    @Query("SELECT * FROM products p, shops s where s.id = p.shopId ORDER BY p.id DESC LIMIT :pageSize OFFSET :offset")
     List<ProductWithShopInfo> getProductsWithShopInfo(int pageSize, int offset);
+
+    @Query("SELECT * FROM products p, shops s where s.id = p.shopId and p.productName LIKE :productName ORDER BY p.id DESC LIMIT :pageSize OFFSET :offset")
+    List<ProductWithShopInfo> getProductsWithShopInfoByName(int pageSize, int offset, String productName);
+
+    @Query("SELECT * FROM products p, shops s where s.id = p.shopId and p.productType = :productType ORDER BY p.id DESC LIMIT :pageSize OFFSET :offset")
+    List<ProductWithShopInfo> getProductsWithShopInfoByType(int pageSize, int offset, int productType);
+
+    @Query("SELECT * FROM products p, shops s where s.id = p.shopId and p.productName LIKE :productName and p.productType LIKE :productType ORDER BY p.id DESC LIMIT :pageSize OFFSET :offset")
+    List<ProductWithShopInfo> getProductsWithShopInfoByTypeAndName(int pageSize, int offset, int productType, String productName);
 }

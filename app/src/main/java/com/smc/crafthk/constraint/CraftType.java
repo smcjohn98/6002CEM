@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum CraftType {
+    NONE(0, "Select types..."),
     TEXTILE_CRAFT(1, "Textile Craft"),
     CERAMIC_CRAFT(2, "Ceramic Craft"),
     WOODWORKING_CRAFT(3, "Woodworking Craft"),

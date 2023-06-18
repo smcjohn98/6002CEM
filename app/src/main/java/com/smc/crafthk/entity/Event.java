@@ -13,10 +13,10 @@ public class Event {
     public int id;
 
     public int shopId;
-    public String name;
-    public BigDecimal price;
-    public String imagePath;
-    public LocalDateTime dateTime;
-    public String description;
+    public String eventName;
+    public BigDecimal eventPrice;
+    public String eventImagePath;
+    public LocalDateTime eventDateTime;
+    public String eventDescription;
 
 }

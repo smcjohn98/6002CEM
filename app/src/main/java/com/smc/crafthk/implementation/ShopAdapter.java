@@ -3,7 +3,6 @@ package com.smc.crafthk.implementation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.smc.crafthk.R;
 import com.smc.crafthk.entity.Shop;
-import com.smc.crafthk.ui.shop.CreateShopActivity;
 
 import java.io.File;
 import java.util.List;
@@ -39,7 +37,7 @@ public class ShopAdapter extends RecyclerView.Adapter<ShopAdapter.ShopViewHolder
         holder.textShopName.setText(shop.name);
 
         Glide.with(holder.itemView.getContext())
-                .load(new File(shop.imagePath))
+                .load(new File(shop.shopImagePath))
                 .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {

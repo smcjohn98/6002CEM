@@ -11,10 +11,10 @@ public class Product {
     public int id;
 
     public int shopId;
-    public String name;
-    public BigDecimal price;
-    public String imagePath;
-    public int type;
-    public String description;
+    public String productName;
+    public BigDecimal productPrice;
+    public String productImagePath;
+    public int productType;
+    public String productDescription;
 
 }

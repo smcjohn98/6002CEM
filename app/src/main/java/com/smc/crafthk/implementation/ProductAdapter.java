@@ -7,13 +7,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.smc.crafthk.R;
 import com.smc.crafthk.entity.Product;
-import com.smc.crafthk.entity.Shop;
 
 import java.io.File;
 import java.util.List;
@@ -40,12 +38,12 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         Product product = list.get(position);
-        holder.textProductName.setText(product.name);
-        holder.textPrice.setText("$"+product.price.toString());
+        holder.textProductName.setText(product.productName);
+        holder.textPrice.setText("$"+product.productPrice.toString());
         holder.shopInfoLayout.setVisibility(View.GONE);
 
         Glide.with(holder.itemView.getContext())
-                .load(new File(product.imagePath))
+                .load(new File(product.productImagePath))
                 .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {

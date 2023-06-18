@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.smc.crafthk.R;
 import com.smc.crafthk.entity.Event;
-import com.smc.crafthk.entity.Product;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -42,18 +41,18 @@ public class EventAdapter extends RecyclerView.Adapter<EventAdapter.EventViewHol
     @Override
     public void onBindViewHolder(EventViewHolder holder, int position) {
         Event event = list.get(position);
-        holder.textEventName.setText(event.name);
-        if(event.price.compareTo(BigDecimal.ZERO) > 0)
-            holder.textPrice.setText("$"+event.price.toString());
+        holder.textEventName.setText(event.eventName);
+        if(event.eventPrice.compareTo(BigDecimal.ZERO) > 0)
+            holder.textPrice.setText("$"+event.eventPrice.toString());
         else
             holder.textPrice.setText("Free");
-        holder.textDateTime.setText(event.dateTime.toString());
+        holder.textDateTime.setText(event.eventDateTime.toString());
         if(!displayShopName){
             holder.textShopName.setVisibility(View.GONE);
         }
 
         Glide.with(holder.itemView.getContext())
-                .load(new File(event.imagePath))
+                .load(new File(event.eventImagePath))
                 .into(holder.imageView);
 
         holder.itemView.setOnClickListener(v -> {

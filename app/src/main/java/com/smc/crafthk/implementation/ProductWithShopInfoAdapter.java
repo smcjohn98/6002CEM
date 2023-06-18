@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.smc.crafthk.R;
-import com.smc.crafthk.entity.Product;
 import com.smc.crafthk.entity.ProductWithShopInfo;
 
 import java.io.File;
@@ -26,25 +25,33 @@ public class ProductWithShopInfoAdapter extends RecyclerView.Adapter<ProductWith
         this.onItemClickListener = onItemClickListener;
     }
 
+    public void setData(List<ProductWithShopInfo> list){
+        this.list = list;
+    }
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
         return new ProductViewHolder(view);
     }
 
+    public void appendItems(List<ProductWithShopInfo> items) {
+        list.addAll(items);
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
         ProductWithShopInfo product = list.get(position);
-        holder.textProductName.setText(product.product.name);
-        holder.textPrice.setText("$"+product.product.price.toString());
+        holder.textProductName.setText(product.product.productName);
+        holder.textPrice.setText("$"+product.product.productPrice.toString());
         holder.textShopName.setText(product.shop.name);
 
         Glide.with(holder.itemView.getContext())
-                .load(new File(product.product.imagePath))
+                .load(new File(product.product.productImagePath))
                 .into(holder.imageView);
 
         Glide.with(holder.itemView.getContext())
-                .load(new File(product.shop.imagePath))
+                .load(new File(product.shop.shopImagePath))
                 .circleCrop()
                 .into(holder.shopImageView);
 

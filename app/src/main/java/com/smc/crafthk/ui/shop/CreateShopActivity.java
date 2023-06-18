@@ -1,19 +1,12 @@
 package com.smc.crafthk.ui.shop;
 
-import static android.content.ContentValues.TAG;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.location.Address;
-import android.location.Geocoder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,15 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.common.api.Result;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -38,40 +28,16 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
-import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.UserProfileChangeRequest;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.constraint.Util;
 import com.smc.crafthk.dao.ShopDao;
 import com.smc.crafthk.databinding.ActivityCreateShopBinding;
-import com.smc.crafthk.databinding.ActivityRegistrationBinding;
 import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
-import com.smc.crafthk.ui.profile.ProfileActivity;
 import com.smc.crafthk.viewmodel.CreateShopViewModel;
-import com.smc.crafthk.viewmodel.UserProfileViewModel;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.regex.Pattern;
 
 public class CreateShopActivity extends AppCompatActivity {
 
@@ -123,11 +89,11 @@ public class CreateShopActivity extends AppCompatActivity {
             Shop shop = new Shop();
             shop.userId = mAuth.getCurrentUser().getUid();
             shop.name = shopName;
-            shop.phoneNumber = phone;
-            shop.description = description;
+            shop.shopPhoneNumber = phone;
+            shop.shopDescription = description;
             shop.longitude = longitude;
             shop.latitude = latitude;
-            shop.imagePath = imagePath;
+            shop.shopImagePath = imagePath;
             shopDao.insert(shop);
             Intent intent = new Intent(CreateShopActivity.this, ShopActivity.class);
             startActivity(intent);

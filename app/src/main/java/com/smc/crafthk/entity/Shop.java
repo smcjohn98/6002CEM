@@ -12,10 +12,9 @@ public class Shop {
     public String name;
     public Double longitude;
     public Double latitude;
-    public String imagePath;
-    public String location;
-    public String phoneNumber;
-    public String description;
+    public String shopImagePath;
+    public String shopPhoneNumber;
+    public String shopDescription;
 
 
 }
