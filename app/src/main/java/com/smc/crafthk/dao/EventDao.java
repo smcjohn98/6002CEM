@@ -7,6 +7,8 @@ import androidx.room.Query;
 import androidx.room.Update;
 
 import com.smc.crafthk.entity.Event;
+import com.smc.crafthk.entity.EventWithShopInfo;
+import com.smc.crafthk.entity.ProductWithShopInfo;
 
 import java.util.List;
 
@@ -26,4 +28,7 @@ public interface EventDao {
 
     @Query("SELECT * FROM events where shopId = :shopId")
     List<Event> getEventByShopId(int shopId);
+
+    @Query("SELECT * FROM events e, shops s where s.id = e.shopId LIMIT :pageSize OFFSET :offset")
+    List<EventWithShopInfo> getEventsWithShopInfo(int pageSize, int offset);
 }

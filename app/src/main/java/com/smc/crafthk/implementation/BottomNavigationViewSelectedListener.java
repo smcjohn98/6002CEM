@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.MainActivity;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.Constraint;
+import com.smc.crafthk.ui.explore.ExploreActivity;
 import com.smc.crafthk.ui.profile.LoginActivity;
 import com.smc.crafthk.ui.profile.ProfileActivity;
 
@@ -53,6 +54,11 @@ public class BottomNavigationViewSelectedListener implements NavigationBarView.O
                 context.startActivity(intent);
                 return true;
             }
+        }
+        else if(itemId == R.id.explore){
+            Intent intent = new Intent(context, ExploreActivity.class);
+            context.startActivity(intent);
+            return false;
         }
         return false;
     }

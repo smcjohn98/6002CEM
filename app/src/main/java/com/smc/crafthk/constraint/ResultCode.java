@@ -9,7 +9,8 @@ public enum ResultCode {
     PICK_SHOP_LOCATION(1003),
     REQUEST_IMAGE_PERMISSION(1004),
     SHOP_IMAGE(1005),
-    PRODUCT_IMAGE(1006);
+    PRODUCT_IMAGE(1006),
+    PERMISSION_LOCATION(1007);
 
     int code;
     ResultCode(int code){

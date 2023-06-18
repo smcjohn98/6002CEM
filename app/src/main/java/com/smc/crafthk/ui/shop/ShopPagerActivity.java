@@ -43,7 +43,7 @@ public class ShopPagerActivity extends AppCompatActivity {
         TabLayout tabLayout = binding.tabLayout;
         ViewPager2 viewPager = binding.viewPager;
 
-        ShopPagerAdapter adapter = new ShopPagerAdapter(getSupportFragmentManager(), getLifecycle());
+        ShopPagerAdapter adapter = new ShopPagerAdapter(shopId, getSupportFragmentManager(), getLifecycle());
         viewPager.setAdapter(adapter);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             switch (position) {

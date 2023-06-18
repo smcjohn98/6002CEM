@@ -4,33 +4,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.smc.crafthk.R;
 import com.smc.crafthk.entity.Product;
-import com.smc.crafthk.entity.Shop;
+import com.smc.crafthk.entity.ProductWithShopInfo;
 
 import java.io.File;
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+public class ProductWithShopInfoAdapter extends RecyclerView.Adapter<ProductWithShopInfoAdapter.ProductViewHolder> {
 
-    private List<Product> list;
+    private List<ProductWithShopInfo> list;
     private OnItemClickListener onItemClickListener;
 
-    public ProductAdapter(List<Product> list, OnItemClickListener onItemClickListener) {
+    public ProductWithShopInfoAdapter(List<ProductWithShopInfo> list, OnItemClickListener onItemClickListener) {
         this.list = list;
         this.onItemClickListener = onItemClickListener;
     }
 
-    public void setData(List<Product> data){
-        list = data;
-    }
     @Override
     public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_product, parent, false);
@@ -39,14 +34,19 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
-        Product product = list.get(position);
-        holder.textProductName.setText(product.name);
-        holder.textPrice.setText("$"+product.price.toString());
-        holder.shopInfoLayout.setVisibility(View.GONE);
+        ProductWithShopInfo product = list.get(position);
+        holder.textProductName.setText(product.product.name);
+        holder.textPrice.setText("$"+product.product.price.toString());
+        holder.textShopName.setText(product.shop.name);
 
         Glide.with(holder.itemView.getContext())
-                .load(new File(product.imagePath))
+                .load(new File(product.product.imagePath))
                 .into(holder.imageView);
+
+        Glide.with(holder.itemView.getContext())
+                .load(new File(product.shop.imagePath))
+                .circleCrop()
+                .into(holder.shopImageView);
 
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {
@@ -66,18 +66,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
+        ImageView shopImageView;
         TextView textProductName;
         TextView textPrice;
         TextView textShopName;
-        LinearLayout shopInfoLayout;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             imageView = itemView.findViewById(R.id.image_product);
+            shopImageView = itemView.findViewById(R.id.image_shop);
             textProductName = itemView.findViewById(R.id.text_product_name);
             textPrice = itemView.findViewById(R.id.text_price);
             textShopName = itemView.findViewById(R.id.text_shop_name);
-            shopInfoLayout = itemView.findViewById(R.id.shop_info);
         }
     }
 }

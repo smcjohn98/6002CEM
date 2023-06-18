@@ -24,12 +24,14 @@ import com.smc.crafthk.ui.product.CreateProductActivity;
 import com.smc.crafthk.ui.shop.ShopActivity;
 import com.smc.crafthk.ui.shop.ShopPagerActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProductFragment extends Fragment {
 
     FragmentProductBinding binding;
-
+    ProductAdapter adapter;
+    int shopId;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,22 +41,31 @@ public class ProductFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentProductBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
         Bundle bundle = getArguments();
-        int shopId = bundle.getInt(Constraint.SHOP_ID_INTENT_EXTRA);
+        shopId = bundle.getInt(Constraint.SHOP_ID_INTENT_EXTRA);
 
-        ProductDao productDao = AppDatabase.getDatabase(getContext()).productDao();
 
-        List<Product> productList = productDao.getProductsByShopId(shopId);
         RecyclerView productView = binding.listProduct;
         productView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        ProductAdapter adapter = new ProductAdapter(productList, position->{}, false);
+        adapter = new ProductAdapter(new ArrayList<>(), position->{});
         productView.setAdapter(adapter);
 
         binding.buttonCreate.setOnClickListener(v->{
             Intent intent = new Intent(getActivity(), CreateProductActivity.class);
             intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, shopId);
             startActivity(intent);
+
         });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ProductDao productDao = AppDatabase.getDatabase(getContext()).productDao();
+        List<Product> productList = productDao.getProductsByShopId(shopId);
+        adapter.setData(productList);
+        adapter.notifyDataSetChanged();
     }
 }

@@ -55,6 +55,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.ResultCode;
+import com.smc.crafthk.constraint.Util;
 import com.smc.crafthk.dao.ShopDao;
 import com.smc.crafthk.databinding.ActivityCreateShopBinding;
 import com.smc.crafthk.databinding.ActivityRegistrationBinding;
@@ -113,7 +114,7 @@ public class CreateShopActivity extends AppCompatActivity {
             String phone = editPhone.getText().toString();
             String description = editDescription.getText().toString();
 
-            if (shopName.isEmpty() || phone.isEmpty() || description.isEmpty() || longitude == null || imagePath == null ) {
+            if (shopName.isEmpty() || phone.isEmpty() || description.isEmpty() || longitude == null || imagePath == null) {
                 Toast.makeText(CreateShopActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -143,8 +144,7 @@ public class CreateShopActivity extends AppCompatActivity {
                     ActivityCompat.requestPermissions(CreateShopActivity.this,
                             new String[]{Manifest.permission.READ_MEDIA_IMAGES},
                             ResultCode.REQUEST_IMAGE_PERMISSION.getCode());
-                }
-                else {
+                } else {
                     pickImage();
                 }
             }
@@ -167,6 +167,7 @@ public class CreateShopActivity extends AppCompatActivity {
 
                 googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
+
                 googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
                     public void onMapClick(LatLng latLng) {
@@ -177,7 +178,8 @@ public class CreateShopActivity extends AppCompatActivity {
                         longitude = latLng.longitude;
                         latitude = latLng.latitude;
                         textLocationValue.setText(String.format("(%f, %f)", latitude, longitude));
-                        Geocoder geocoder = new Geocoder(CreateShopActivity.this, Locale.getDefault());
+                        binding.textAddress.setText(Util.getAddress(CreateShopActivity.this, new LatLng(latitude, longitude)));
+                        /*Geocoder geocoder = new Geocoder(CreateShopActivity.this, Locale.getDefault());
                         try {
                             // Get the address from the Geocoder
                             List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
@@ -200,7 +202,7 @@ public class CreateShopActivity extends AppCompatActivity {
                             }
                         } catch (IOException e) {
                             Log.e(TAG, "Geocoder exception: " + e.getMessage());
-                        }
+                        }*/
                     }
                 });
             }

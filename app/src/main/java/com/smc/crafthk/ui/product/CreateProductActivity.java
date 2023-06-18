@@ -16,9 +16,12 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +41,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseAuth;
 import com.smc.crafthk.R;
+import com.smc.crafthk.constraint.CraftType;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.dao.ProductDao;
 import com.smc.crafthk.dao.ShopDao;
@@ -75,6 +79,26 @@ public class CreateProductActivity extends AppCompatActivity {
         EditText editDescription = binding.editDescription;
         Button buttonImage = binding.buttonImage;
         Button buttonCreate = binding.buttonCreate;
+        Spinner spinner = binding.spinnerType;
+
+        ArrayAdapter<CraftType> adapter = new ArrayAdapter<CraftType>(
+                this, android.R.layout.simple_spinner_item, CraftType.values()) {
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+                TextView view = (TextView) super.getView(position, convertView, parent);
+                view.setText(CraftType.values()[position].getName());
+                return view;
+            }
+
+            @Override
+            public View getDropDownView(int position, View convertView, ViewGroup parent) {
+                TextView view = (TextView) super.getDropDownView(position, convertView, parent);
+                view.setText(CraftType.values()[position].getName());
+                return view;
+            }
+        };
+
+        spinner.setAdapter(adapter);
 
         int shopId = getIntent().getIntExtra(SHOP_ID_INTENT_EXTRA, -1);
 
@@ -82,8 +106,9 @@ public class CreateProductActivity extends AppCompatActivity {
             String productName = editProductName.getText().toString();
             String description = editDescription.getText().toString();
             String price = editPrice.getText().toString();
+            CraftType type = (CraftType)spinner.getSelectedItem();
 
-            if (productName.isEmpty() || description.isEmpty() || price.isEmpty()) {
+            if (productName.isEmpty() || description.isEmpty() || price.isEmpty() || type == null) {
                 Toast.makeText(CreateProductActivity.this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -93,11 +118,12 @@ public class CreateProductActivity extends AppCompatActivity {
             product.shopId = shopId;
             product.price = new BigDecimal(price);
             product.name = productName;
+            product.type = type.getId();
             product.description = description;
             product.imagePath = imagePath;
             productDao.insert(product);
-            Intent intent = new Intent(CreateProductActivity.this, ShopPagerActivity.class);
-            startActivity(intent);
+            //Intent intent = new Intent(CreateProductActivity.this, ShopPagerActivity.class);
+            //startActivity(intent);
             finish();
         });
 

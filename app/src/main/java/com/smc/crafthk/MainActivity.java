@@ -22,11 +22,22 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.Manifest.permission;
 
+import com.smc.crafthk.dao.ProductDao;
 import com.smc.crafthk.databinding.ActivityMainBinding;
+import com.smc.crafthk.entity.Product;
+import com.smc.crafthk.entity.ProductWithShopInfo;
+import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
+import com.smc.crafthk.implementation.ProductAdapter;
+import com.smc.crafthk.implementation.ProductWithShopInfoAdapter;
 import com.smc.crafthk.ui.profile.LoginActivity;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,15 +53,16 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        /*Toolbar toolbar = binding.appBarMain.toolbar;
-        setSupportActionBar(toolbar);*/
+        ProductDao productDao = AppDatabase.getDatabase(this).productDao();
 
-        /*ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeAsUpIndicator(R.drawable.ic_home);
-        actionBar.setDisplayHomeAsUpEnabled(true);*/
+        List<ProductWithShopInfo> productList = productDao.getProductsWithShopInfo(20,0);
+        RecyclerView productView = binding.listProduct;
+        productView.setLayoutManager(new GridLayoutManager(this, 2));
+        ProductWithShopInfoAdapter adapter = new ProductWithShopInfoAdapter(productList, position->{});
+        productView.setAdapter(adapter);
+
 
         bottomNavigationView = binding.bottomNavigationView;
-
         bottomNavigationView.setOnItemSelectedListener(new BottomNavigationViewSelectedListener(this));
     }
 

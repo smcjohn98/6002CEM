@@ -109,8 +109,6 @@ public class CreateEventActivity extends AppCompatActivity {
             event.dateTime = eventDateTime;
             event.imagePath = imagePath;
             eventDao.insert(event);
-            Intent intent = new Intent(CreateEventActivity.this, ShopPagerActivity.class);
-            startActivity(intent);
             finish();
         });
 
