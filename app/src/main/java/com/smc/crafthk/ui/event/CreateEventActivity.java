@@ -189,9 +189,9 @@ public class CreateEventActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }
-        else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
-            pickImage();
+            else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
+                pickImage();
+            }
         }
     }
 

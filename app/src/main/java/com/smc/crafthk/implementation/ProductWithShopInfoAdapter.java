@@ -58,6 +58,12 @@ public class ProductWithShopInfoAdapter extends RecyclerView.Adapter<ProductWith
                 .circleCrop()
                 .into(holder.shopImageView);
 
+        holder.shopImageView.setOnClickListener(v->{
+            Intent intent = new Intent(holder.textShopName.getContext(), ShopViewPagerActivity.class);
+            intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, product.shop.id);
+            holder.textShopName.getContext().startActivity(intent);
+        });
+
         holder.textShopName.setOnClickListener(v->{
             Intent intent = new Intent(holder.textShopName.getContext(), ShopViewPagerActivity.class);
             intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, product.shop.id);

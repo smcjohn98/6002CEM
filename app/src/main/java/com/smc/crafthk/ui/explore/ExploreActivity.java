@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,6 +38,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.constraint.ResultCode;
@@ -47,6 +51,7 @@ import com.smc.crafthk.databinding.ActivityExploreBinding;
 import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.ui.home.ShopViewPagerActivity;
+import com.smc.crafthk.ui.profile.ProfileActivity;
 import com.smc.crafthk.ui.shop.CreateShopActivity;
 
 import java.io.IOException;
@@ -67,6 +72,9 @@ public class ExploreActivity extends AppCompatActivity {
 
     Shop selectedShop;
 
+    FirebaseFirestore firestore;
+
+    boolean getLocationFinish;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,7 +85,9 @@ public class ExploreActivity extends AppCompatActivity {
             Places.initialize(this, "AIzaSyAM1SEv2w5kAAUqVsr--b0p0IfwdCT7Ssg");
         }
 
+        firestore = FirebaseFirestore.getInstance();
         markerToShop = new HashMap<>();
+
         ShopDao shopDao = AppDatabase.getDatabase(this).shopDao();
         List<Shop> shopList = shopDao.getAllShops();
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
@@ -85,14 +95,13 @@ public class ExploreActivity extends AppCompatActivity {
 
         if (ActivityCompat.checkSelfPermission(ExploreActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(ExploreActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            currentLatitude = lastLocation.getLatitude();
-            currentLongitude = lastLocation.getLongitude();
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (location -> {
-                currentLatitude = location.getLatitude();
-                currentLongitude = location.getLongitude();
-            }));
+
+            setGPSListener();
+        }
+        else{
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    ResultCode.PERMISSION_LOCATION.getCode());
         }
 
 
@@ -103,16 +112,8 @@ public class ExploreActivity extends AppCompatActivity {
             public void onMapReady(GoogleMap googleMap) {
                 ExploreActivity.this.googleMap = googleMap;
 
-
-                if(currentLatitude == null){
-                    LatLng location = new LatLng(22.319899, 114.174467);
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
-                }
-                else {
-                    LatLng location = new LatLng(currentLatitude, currentLongitude);
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
-                    googleMap.setMyLocationEnabled(true);
-                }
+                LatLng location = new LatLng(22.319899, 114.174467);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
 
                 googleMap.getUiSettings().setZoomControlsEnabled(true);
                 for(Shop shop:shopList){
@@ -131,9 +132,11 @@ public class ExploreActivity extends AppCompatActivity {
                         selectedShop = shop;
                         binding.buttonView.setVisibility(View.VISIBLE);
                         binding.textShopId.setText("Shop : "+shop.name);
-                        float[] results = new float[1];
-                        Location.distanceBetween(shop.latitude, shop.longitude, currentLatitude, currentLongitude, results);
-                        binding.textDistance.setText("Distance(m) : "+String.valueOf(results[0]));
+                        if(currentLatitude != null){
+                            float[] results = new float[1];
+                            Location.distanceBetween(shop.latitude, shop.longitude, currentLatitude, currentLongitude, results);
+                            binding.textDistance.setText("Distance(m) : "+String.valueOf(results[0]));
+                        }
                     }
                     return false;
                 });
@@ -147,6 +150,12 @@ public class ExploreActivity extends AppCompatActivity {
         });
 
         binding.buttonSwitch.setOnCheckedChangeListener((buttonView, isChecked)->{
+            if(currentLongitude == null){
+                Toast.makeText(ExploreActivity.this, "Cannot find your location, please check GPS setting/permission", Toast.LENGTH_SHORT).show();
+                buttonView.setChecked(!isChecked);
+                return;
+            }
+
             if(isChecked){
                 if(currentLatitude != null){
                     LatLng latLng = new LatLng(currentLatitude, currentLongitude);
@@ -183,14 +192,28 @@ public class ExploreActivity extends AppCompatActivity {
 
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == ResultCode.PERMISSION_LOCATION.getCode() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            LatLng location = new LatLng(currentLatitude, currentLongitude);
-            googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 14));
-            googleMap.setMyLocationEnabled(true);
+            setGPSListener();
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    public void setGPSListener(){
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        //Location lastLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, (location -> {
+            currentLatitude = location.getLatitude();
+            currentLongitude = location.getLongitude();
+            if(!getLocationFinish && googleMap != null){
+                LatLng latLng = new LatLng(currentLatitude, currentLongitude);
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+                googleMap.setMyLocationEnabled(true);
+                googleMap.getUiSettings().setZoomControlsEnabled(true);
+                getLocationFinish = true;
+            }
+        }));
     }
 }

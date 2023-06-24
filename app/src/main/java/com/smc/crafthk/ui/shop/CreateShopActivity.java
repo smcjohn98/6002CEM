@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.ResultCode;
 import com.smc.crafthk.constraint.Util;
@@ -40,7 +42,6 @@ import com.smc.crafthk.databinding.ActivityCreateShopBinding;
 import com.smc.crafthk.entity.Shop;
 import com.smc.crafthk.helper.AppDatabase;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
-import com.smc.crafthk.ui.event.CreateEventActivity;
 import com.smc.crafthk.viewmodel.CreateShopViewModel;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class CreateShopActivity extends AppCompatActivity {
     private ActivityCreateShopBinding binding;
 
     private CreateShopViewModel viewModel;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth firebaseAuth;
 
     private SupportMapFragment mapFragment;
 
@@ -69,7 +70,7 @@ public class CreateShopActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCreateShopBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         viewModel = new ViewModelProvider(this).get(CreateShopViewModel.class);
 
         if (!Places.isInitialized()) {
@@ -84,7 +85,6 @@ public class CreateShopActivity extends AppCompatActivity {
         Button buttonCreate = binding.buttonCreate;
         textLocationValue = binding.textLocationValue;
         textAddress = binding.textAddress;
-
         buttonCreate.setOnClickListener((v) -> {
             String shopName = editShopName.getText().toString();
             String phone = editPhone.getText().toString();
@@ -95,9 +95,14 @@ public class CreateShopActivity extends AppCompatActivity {
                 return;
             }
 
+            if(phone.length() != 8 || !phone.matches("\\d+")){
+                Toast.makeText(CreateShopActivity.this, "Phone number must be 8 digits", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             ShopDao shopDao = AppDatabase.getDatabase(getApplicationContext()).shopDao();
             Shop shop = new Shop();
-            shop.userId = mAuth.getCurrentUser().getUid();
+            shop.userId = firebaseAuth.getCurrentUser().getUid();
             shop.name = shopName;
             shop.shopPhoneNumber = phone;
             shop.shopDescription = description;
@@ -134,7 +139,7 @@ public class CreateShopActivity extends AppCompatActivity {
             public void onMapReady(GoogleMap googleMap) {
 
                 LatLng defaultLocation = new LatLng(22.319899, 114.174467);
-                float defaultZoom = 18.0f;
+                float defaultZoom = 13.0f;
 
                 CameraPosition cameraPosition = new CameraPosition.Builder()
                         .target(defaultLocation)
@@ -155,30 +160,6 @@ public class CreateShopActivity extends AppCompatActivity {
                         latitude = latLng.latitude;
                         textLocationValue.setText(String.format("(%f, %f)", latitude, longitude));
                         binding.textAddress.setText(Util.getAddress(CreateShopActivity.this, new LatLng(latitude, longitude)));
-                        /*Geocoder geocoder = new Geocoder(CreateShopActivity.this, Locale.getDefault());
-                        try {
-                            // Get the address from the Geocoder
-                            List<Address> addresses = geocoder.getFromLocation(latitude, longitude, 1);
-
-                            if (addresses != null && !addresses.isEmpty()) {
-                                // Get the first address from the list
-                                Address address = addresses.get(0);
-
-                                // Get the address lines and join them into a string
-                                List<String> addressLines = new ArrayList<>();
-                                for (int i = 0; i <= address.getMaxAddressLineIndex(); i++) {
-                                    addressLines.add(address.getAddressLine(i));
-                                }
-                                String addressString = TextUtils.join(", ", addressLines);
-                                binding.textAddress.setText(addressString);
-                                // Use the address string
-                                Log.d(TAG, "Address: " + addressString);
-                            } else {
-                                Log.d(TAG, "Address not found");
-                            }
-                        } catch (IOException e) {
-                            Log.e(TAG, "Geocoder exception: " + e.getMessage());
-                        }*/
                     }
                 });
             }
@@ -229,9 +210,9 @@ public class CreateShopActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-        }
-        else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
-            pickImage();
+            else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
+                pickImage();
+            }
         }
     }
 

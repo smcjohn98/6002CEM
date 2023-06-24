@@ -2,7 +2,6 @@ package com.smc.crafthk.ui.profile;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -21,16 +19,15 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
-import com.smc.crafthk.MainActivity;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.smc.crafthk.R;
 import com.smc.crafthk.constraint.ResultCode;
-import com.smc.crafthk.dao.UserDao;
 import com.smc.crafthk.databinding.ActivityRegistrationBinding;
-import com.smc.crafthk.entity.User;
-import com.smc.crafthk.helper.AppDatabase;
+import com.smc.crafthk.dto.UserMetadata;
 import com.smc.crafthk.implementation.BottomNavigationViewSelectedListener;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.regex.Pattern;
 
@@ -38,7 +35,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private ActivityRegistrationBinding binding;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth firebaseAuth;
 
     private Pattern pattern = Pattern.compile("[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+");
 
@@ -47,7 +44,7 @@ public class RegistrationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         EditText editName = binding.editName;
         EditText editEmail = binding.editEmail;
         EditText editPassword = binding.editPassword;
@@ -80,7 +77,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     return;
                 }
 
-                mAuth.createUserWithEmailAndPassword(email, password)
+                firebaseAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(RegistrationActivity.this, new OnCompleteListener<AuthResult>() {
 
                             @Override
@@ -91,6 +88,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                     UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                             .setDisplayName(name)
                                             .build();
+
 
                                     user.updateProfile(profileUpdates)
                                         .addOnCompleteListener(new OnCompleteListener<Void>() {

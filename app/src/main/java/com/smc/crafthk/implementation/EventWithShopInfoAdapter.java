@@ -1,5 +1,6 @@
 package com.smc.crafthk.implementation;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.smc.crafthk.R;
+import com.smc.crafthk.constraint.Constraint;
 import com.smc.crafthk.entity.EventWithShopInfo;
+import com.smc.crafthk.ui.home.ShopViewPagerActivity;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -57,6 +60,18 @@ public class EventWithShopInfoAdapter extends RecyclerView.Adapter<EventWithShop
                 .load(new File(eventWithShopInfo.shop.shopImagePath))
                 .circleCrop()
                 .into(holder.shopImageView);
+
+        holder.shopImageView.setOnClickListener(v->{
+            Intent intent = new Intent(holder.textShopName.getContext(), ShopViewPagerActivity.class);
+            intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, eventWithShopInfo.shop.id);
+            holder.textShopName.getContext().startActivity(intent);
+        });
+
+        holder.textShopName.setOnClickListener(v->{
+            Intent intent = new Intent(holder.textShopName.getContext(), ShopViewPagerActivity.class);
+            intent.putExtra(Constraint.SHOP_ID_INTENT_EXTRA, eventWithShopInfo.shop.id);
+            holder.textShopName.getContext().startActivity(intent);
+        });
 
         holder.itemView.setOnClickListener(v -> {
             if (onItemClickListener != null) {

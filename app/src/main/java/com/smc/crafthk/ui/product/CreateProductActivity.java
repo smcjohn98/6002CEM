@@ -105,8 +105,6 @@ public class CreateProductActivity extends AppCompatActivity {
             product.productDescription = description;
             product.productImagePath = imagePath;
             productDao.insert(product);
-            //Intent intent = new Intent(CreateProductActivity.this, ShopPagerActivity.class);
-            //startActivity(intent);
             finish();
         });
 
@@ -172,10 +170,11 @@ public class CreateProductActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+            else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
+                pickImage();
+            }
         }
-        else if (requestCode == ResultCode.REQUEST_IMAGE_PERMISSION.getCode()){
-            pickImage();
-        }
+
     }
 
     private String getRealPathFromURI(Uri uri) {
