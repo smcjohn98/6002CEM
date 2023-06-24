@@ -118,6 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
                     UserMetadata userMetadata = new UserMetadata();
                     userMetadata.setUserId(user.getUid());
                     userMetadata.setDeviceToken(token);
+                    userMetadata.setEmail(user.getEmail());
                     messagesRef.add(userMetadata);
                 });
             }
